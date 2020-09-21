@@ -65,6 +65,7 @@
    use turbulence,  only: turb_method
    use turbulence,  only: init_turbulence,post_init_turbulence,do_turbulence
    use turbulence,  only: num,nuh,nus
+   use turbulence,  only: eps
    use turbulence,  only: const_num,const_nuh
    use turbulence,  only: gamu,gamv,gamh,gams
    use turbulence,  only: Rig
@@ -510,7 +511,7 @@
          call model_fabm%link_horizontal_data(standard_variables_fabm%surface_temperature,ta)
       end if
       call set_env_gotm_fabm(latitude,longitude,dt,w_adv%method,w_adv_discr,t(1:nlev),s(1:nlev),rho(1:nlev), &
-                             nuh,h,w,bioshade(1:nlev),I_0%value,cloud%value,taub,wind,precip%value,evap,z(1:nlev), &
+                             nuh,eps,num,h,w,bioshade(1:nlev),I_0%value,cloud%value,taub,wind,precip%value,evap,z(1:nlev), &
                              A_%value,g1_%value,g2_%value,yearday,secondsofday,SRelaxTau(1:nlev),sProf%data(1:nlev), &
                              bio_albedo,bio_drag_scale)
 
