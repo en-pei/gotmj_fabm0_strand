@@ -91,7 +91,7 @@
       module procedure register_scalar_observation
    end interface
 
-   type (type_bulk_variable_id),      save :: temp_id,salt_id,rho_id,h_id,swr_id,par_id,pres_id
+   type (type_bulk_variable_id),      save :: temp_id,salt_id,rho_id,h_id,swr_id,par_id,pres_id,eps_id,num_id
    type (type_horizontal_variable_id),save :: lon_id,lat_id,windspeed_id,par_sf_id,cloud_id,taub_id,swr_sf_id
 
 !  Variables to hold time spent on advection, diffusion, sink/source terms.
@@ -477,7 +477,7 @@
       par_id  = model%get_bulk_variable_id(standard_variables%downwelling_photosynthetic_radiative_flux)
       swr_id  = model%get_bulk_variable_id(standard_variables%downwelling_shortwave_flux)
       pres_id = model%get_bulk_variable_id(standard_variables%pressure)
-      eps_id  = model%get_bulk_variable_id(standard_variables%tubulent_kinetic_energy)
+      eps_id  = model%get_bulk_variable_id(standard_variables%turbulent_kinetic_energy)
       num_id  = model%get_bulk_variable_id(standard_variables%momentum_diffusivity)
       lon_id       = model%get_horizontal_variable_id(standard_variables%longitude)
       lat_id       = model%get_horizontal_variable_id(standard_variables%latitude)
@@ -1063,8 +1063,8 @@
    evap     => evap_       ! evaporation [scalar] - used to calculate concentration due to decreased water volume
    salt     => salt_       ! salinity [1d array] - used to calculate virtual freshening due to salinity relaxation
    rho      => rho_        ! density [1d array] - used to calculate pressure.
-   eps      => eps_
-   num      => num_
+  ! eps      => eps_
+  ! num      => num_
 
    if (biodrag_feedback.and.present(bio_drag_scale_)) then
       bio_drag_scale => bio_drag_scale_
@@ -1682,8 +1682,8 @@
    nullify(bioshade)
    nullify(w)
    nullify(rho)
-   nullify(eps)
-   nullify(num)
+   !nullify(eps)
+   !nullify(num)
    nullify(SRelaxTau)
    nullify(sProf)
    nullify(salt)
