@@ -477,7 +477,7 @@
       par_id  = model%get_bulk_variable_id(standard_variables%downwelling_photosynthetic_radiative_flux)
       swr_id  = model%get_bulk_variable_id(standard_variables%downwelling_shortwave_flux)
       pres_id = model%get_bulk_variable_id(standard_variables%pressure)
-      eps_id  = model%get_bulk_variable_id(standard_variables%turbulent_kinetic_energy)
+      eps_id  = model%get_bulk_variable_id(standard_variables%turbulent_kinetic_energy_dissipation)
       num_id  = model%get_bulk_variable_id(standard_variables%momentum_diffusivity)
       lon_id       = model%get_horizontal_variable_id(standard_variables%longitude)
       lat_id       = model%get_horizontal_variable_id(standard_variables%latitude)
