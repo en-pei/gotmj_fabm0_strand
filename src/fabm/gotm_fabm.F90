@@ -477,6 +477,8 @@
       par_id  = model%get_bulk_variable_id(standard_variables%downwelling_photosynthetic_radiative_flux)
       swr_id  = model%get_bulk_variable_id(standard_variables%downwelling_shortwave_flux)
       pres_id = model%get_bulk_variable_id(standard_variables%pressure)
+      eps_id  = model%get_bulk_variable_id(standard_variables%tubulent_kinetic_energy)
+      num_id  = model%get_bulk_variable_id(standard_variables%momentum_diffusivity)
       lon_id       = model%get_horizontal_variable_id(standard_variables%longitude)
       lat_id       = model%get_horizontal_variable_id(standard_variables%latitude)
       windspeed_id = model%get_horizontal_variable_id(standard_variables%wind_speed)
@@ -484,6 +486,7 @@
       swr_sf_id    = model%get_horizontal_variable_id(standard_variables%surface_downwelling_shortwave_flux)
       cloud_id     = model%get_horizontal_variable_id(standard_variables%cloud_area_fraction)
       taub_id      = model%get_horizontal_variable_id(standard_variables%bottom_stress)
+      
 
       ! Initialize optional forcings to "off"
       fabm_airp => null()
@@ -1009,7 +1012,7 @@
 ! !IROUTINE: Set environment for FABM
 !
 ! !INTERFACE:
-   subroutine set_env_gotm_fabm(latitude,longitude,dt_,w_adv_method_,w_adv_ctr_,temp,salt_,rho_,nuh_,h_,w_, &
+   subroutine set_env_gotm_fabm(latitude,longitude,dt_,w_adv_method_,w_adv_ctr_,temp,salt_,rho_,nuh_,eps_,num_,h_,w_, &
                                 bioshade_,I_0_,cloud,taub,wnd,precip_,evap_,z_,A_,g1_,g2_, &
                                 yearday_,secondsofday_,SRelaxTau_,sProf_,bio_albedo_,bio_drag_scale_)
 !
@@ -1021,7 +1024,7 @@
    REALTYPE, intent(in),target :: latitude,longitude
    REALTYPE, intent(in) :: dt_
    integer,  intent(in) :: w_adv_method_,w_adv_ctr_
-   REALTYPE, intent(in),target,dimension(:) :: temp,salt_,rho_,nuh_,h_,w_,bioshade_,z_
+   REALTYPE, intent(in),target,dimension(:) :: temp,salt_,rho_,nuh_,h_,w_,bioshade_,z_,eps_,num_
    REALTYPE, intent(in),target :: I_0_,cloud,wnd,precip_,evap_,taub
    REALTYPE, intent(in),target :: A_,g1_,g2_
    integer,  intent(in),target :: yearday_,secondsofday_
@@ -1041,6 +1044,8 @@
    call model%link_interior_data  (salt_id,     salt_)
    call model%link_interior_data  (rho_id,      rho_)
    call model%link_interior_data  (h_id,        h_(2:))
+   call model%link_interior_data  (eps_id,      eps_(2:))
+   call model%link_interior_data  (num_id,      num_(2:))
    call model%link_horizontal_data(lon_id,      longitude)
    call model%link_horizontal_data(lat_id,      latitude)
    call model%link_horizontal_data(windspeed_id,wnd)
@@ -1058,6 +1063,8 @@
    evap     => evap_       ! evaporation [scalar] - used to calculate concentration due to decreased water volume
    salt     => salt_       ! salinity [1d array] - used to calculate virtual freshening due to salinity relaxation
    rho      => rho_        ! density [1d array] - used to calculate pressure.
+   eps      => eps_
+   num      => num_
 
    if (biodrag_feedback.and.present(bio_drag_scale_)) then
       bio_drag_scale => bio_drag_scale_
@@ -1675,6 +1682,8 @@
    nullify(bioshade)
    nullify(w)
    nullify(rho)
+   nullify(eps)
+   nullify(num)
    nullify(SRelaxTau)
    nullify(sProf)
    nullify(salt)
